@@ -19,6 +19,15 @@ class Advertisement(models.Model):
             return format_html("<span style='color: green; font-weight: bold;'>Сегодня в {}</span>", created_time)
         return self.created_at.strftime("%d.%m.%Y - %H:%M")
 
+    @admin.display(description="Дата обновления публикации")
+    def updated_date(self):
+        from django.utils import timezone
+
+        if self.created_at.date() == timezone.now().date():
+            created_time = self.updated_at.time().strftime("%H:%M:%S")
+            return format_html("<span style='color: yellow; font-weight: bold;'>Сегодня в {}</span>", created_time)
+        return self.updated_at.strftime("%d.%m.%Y - %H:%M")
+
     class Meta:
         db_table = "advertisements"
 
