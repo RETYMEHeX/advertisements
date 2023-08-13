@@ -34,6 +34,12 @@ class Advertisement(models.Model):
             return format_html("<span style='color: yellow; font-weight: bold;'>Сегодня в {}</span>", created_time)
         return self.updated_at.strftime("%d.%m.%Y - %H:%M")
 
+    @admin.display(description="Картинка")
+    def image_display(self):
+        if self.image:
+            return format_html('<a href="{}"><img src={}></a>', self.image.url, self.image.url)
+        return None
+
     class Meta:
         db_table = "advertisements"
 
