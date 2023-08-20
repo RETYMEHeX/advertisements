@@ -1,6 +1,11 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
+
 from .models import Advertisement
+from .forms import AdvertisementForms
+
+from django.core.handlers.wsgi import WSGIRequest
 
 def index(request):
     advertisements = Advertisement.objects.all()
@@ -12,3 +17,21 @@ def index(request):
 
 def top_sellers(request):
     return render(request, 'top-sellers.html')
+
+def post_adv(request: WSGIRequest ):
+
+    if request.method == "POST":
+        form = AdvertisementForms(request.POST, request.FILES)
+        if form.is_valid():
+            adv = Advertisement(**form.cleaned_data)
+            adv.user = request.user
+            adv.save()
+            return redirect(
+                reverse("main")
+            )
+    else:
+        form = AdvertisementForms()
+    context = {
+        "form": form,
+    }
+    return render(request, 'advertisement-post.html', context)
