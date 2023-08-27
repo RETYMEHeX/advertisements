@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib import admin
 from django.utils.html import format_html
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -37,8 +38,11 @@ class Advertisement(models.Model):
     @admin.display(description="Картинка")
     def image_display(self):
         if self.image:
-            return format_html('<a href="{}"><img src={}></a>', self.image.url, self.image.url)
+            return format_html('<a href="{}"><img src={url} style="max-width": 80px; max-height: 80px></a>', self.image.url, self.image.url)
         return None
+
+    def get_absolute_url(self):
+        return reverse("adv-detail", kwargs={"pk": self.id})
 
     class Meta:
         db_table = "advertisements"
